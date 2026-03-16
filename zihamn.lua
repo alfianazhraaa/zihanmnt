@@ -1,7 +1,6 @@
 --[[
   MOUNT ZIHAN v4 — FULL AUTO CP + CLAIM
   BY ALFIAN
-  Auto jalan CP 1→52 lalu claim voucher GoPay
 ]]
 
 local Players  = game:GetService("Players")
@@ -39,9 +38,6 @@ local function applyAntiLag()
     end)
 end
 
--- ══════════════════════════════
--- 52 CP DARI COORD SAVER
--- ══════════════════════════════
 local CP = {
     Vector3.new(3.718,    9.096,    -814.067),
     Vector3.new(15.466,   0.587,    -1582.924),
@@ -92,17 +88,13 @@ local CP = {
     Vector3.new(6628.912, 2167.135, -21425.582),
     Vector3.new(7462.223, 2165.096, -21428.570),
     Vector3.new(8300.794, 2540.896, -21567.137),
-    Vector3.new(9170.898, 5054.228, -21355.643), -- CP 50
-    Vector3.new(9209.609, 5054.228, -21342.803), -- CP 51
-    Vector3.new(9814.756, 2951.411, -21591.408), -- CP 52 summit
+    Vector3.new(9170.898, 5054.228, -21355.643),
+    Vector3.new(9209.609, 5054.228, -21342.803),
+    Vector3.new(9814.756, 2951.411, -21591.408),
 }
 
--- CLAIM dari v3 log analisis
 local CLAIM = Vector3.new(10284.1, 3013.4, -21465.0)
 
--- ══════════════════════════════
--- STATE
--- ══════════════════════════════
 local running   = false
 local stopped   = false
 local statusCB  = nil
@@ -121,9 +113,6 @@ local function notif(t, m)
     end)
 end
 
--- ══════════════════════════════
--- FIND PRIMARY PROMPT
--- ══════════════════════════════
 local function findPrimary()
     local best, bestDist = nil, math.huge
     for _, v in ipairs(workspace:GetDescendants()) do
@@ -150,7 +139,7 @@ local function findPrimary()
     return best
 end
 
-local function tryFire(pr, hrp)
+local function tryFire(pr)
     if not pr then return false end
     for _ = 1, 3 do
         local ok = pcall(function() fireproximityprompt(pr) end)
@@ -160,9 +149,6 @@ local function tryFire(pr, hrp)
     return false
 end
 
--- ══════════════════════════════
--- MAIN SEQUENCE
--- ══════════════════════════════
 local function runSequence(startFrom)
     if running then return end
     running = true; stopped = false
@@ -176,70 +162,54 @@ local function runSequence(startFrom)
         local hum = char:FindFirstChildOfClass("Humanoid")
         if hum then hum.WalkSpeed = 0 end
 
-        local from = startFrom or 1
+        local from = math.clamp(startFrom or 1, 1, #CP)
 
-        -- ── FASE 1: TP semua CP ──
         for i = from, #CP do
             if stopped then
                 setStatus("STOPPED", "err"); running=false; return
             end
-
-            local pt = CP[i]
             setStatus("CP "..i.."/"..#CP, "wait")
             setProgress(i, #CP)
-
-            hrp.CFrame = CFrame.new(pt + Vector3.new(0, 5, 0))
-
-            -- delay lebih panjang di CP kritis (50-52)
-            if i >= 50 then
-                task.wait(0.35)
-            else
-                task.wait(0.18)
-            end
+            hrp.CFrame = CFrame.new(CP[i] + Vector3.new(0,5,0))
+            task.wait(i >= 50 and 0.35 or 0.18)
         end
 
-        -- ── FASE 2: ZihanV3 sequence (T3 → T1 → T2 → CLAIM) ──
+        -- ZihanV3 sequence
         setStatus("MENUJU CLAIM", "wait")
-        setProgress(#CP, #CP)
 
-        -- T3 summit loop
-        hrp.CFrame = CFrame.new(Vector3.new(9874.0, 2950.8, -21571.6) + Vector3.new(0,5,0))
+        hrp.CFrame = CFrame.new(9874.0, 2955.8, -21571.6)
         task.wait(0.3)
         if stopped then setStatus("STOPPED","err"); running=false; return end
 
-        -- T1 basecamp
-        hrp.CFrame = CFrame.new(Vector3.new(9233.1, 5054.2, -21332.8) + Vector3.new(0,5,0))
+        hrp.CFrame = CFrame.new(9233.1, 5059.2, -21332.8)
         task.wait(0.3)
         if stopped then setStatus("STOPPED","err"); running=false; return end
 
-        -- T2 intermediate
-        hrp.CFrame = CFrame.new(Vector3.new(9814.0, 2951.7, -21591.3) + Vector3.new(0,5,0))
+        hrp.CFrame = CFrame.new(9814.0, 2957.5, -21591.3)
         task.wait(0.25)
         if stopped then setStatus("STOPPED","err"); running=false; return end
 
-        -- CLAIM point
         hrp.CFrame = CFrame.new(CLAIM + Vector3.new(0,5,0))
         task.wait(0.3)
 
         if hum then hum.WalkSpeed = 16 end
         task.wait(0.1)
 
-        -- scan + fire prompt
         local result = findPrimary()
         if result then
             local dir = (hrp.Position - result.pos)
-            local safePos = result.pos + (dir.Magnitude > 0.1 and dir.Unit*6 or Vector3.new(0,0,6))
-            hrp.CFrame = CFrame.new(safePos + Vector3.new(0,3,0))
+            local safe = result.pos + (dir.Magnitude > 0.1 and dir.Unit*6 or Vector3.new(0,0,6))
+            hrp.CFrame = CFrame.new(safe + Vector3.new(0,3,0))
             task.wait(0.2)
             if hum then hum.Jump = true end
             task.wait(0.1)
-            tryFire(result.prompt, hrp)
-            if not tryFire(result.prompt, hrp) then
+            tryFire(result.prompt)
+            if not tryFire(result.prompt) then
                 hrp.CFrame = CFrame.new(CLAIM + Vector3.new(0,3,0))
                 task.wait(0.15)
                 if hum then hum.Jump = true end
                 task.wait(0.08)
-                tryFire(result.prompt, hrp)
+                tryFire(result.prompt)
             end
         else
             hrp.CFrame = CFrame.new(CLAIM + Vector3.new(0,3,0))
@@ -247,7 +217,7 @@ local function runSequence(startFrom)
             if hum then hum.Jump = true end
             task.wait(0.1)
             result = findPrimary()
-            if result then tryFire(result.prompt, hrp) end
+            if result then tryFire(result.prompt) end
         end
 
         setStatus("DONE — CLAIM MANUAL", "done")
@@ -258,16 +228,19 @@ local function runSequence(startFrom)
 end
 
 -- ══════════════════════════════
--- GUI
+-- GUI — FIXED LAYOUT
+-- Panel 220 × 280, semua elemen
+-- pakai posisi absolut bukan
+-- UIListLayout agar tidak terpotong
 -- ══════════════════════════════
-local PNL = Color3.fromRGB(14, 14, 14)
-local MID = Color3.fromRGB(22, 22, 22)
-local BRD = Color3.fromRGB(34, 34, 34)
-local BRD2= Color3.fromRGB(50, 50, 50)
+local PNL = Color3.fromRGB(14,14,14)
+local MID = Color3.fromRGB(22,22,22)
+local BRD = Color3.fromRGB(34,34,34)
+local BRD2= Color3.fromRGB(50,50,50)
 local DIM = Color3.fromRGB(100,100,100)
 local SIL = Color3.fromRGB(153,153,153)
 local WHT = Color3.fromRGB(230,230,230)
-local DEEP= Color3.fromRGB(8,  8,  8)
+local DEEP= Color3.fromRGB(8,8,8)
 local GR  = Color3.fromRGB(150,255,170)
 local RD  = Color3.fromRGB(255,100,100)
 local YL  = Color3.fromRGB(230,200,100)
@@ -293,8 +266,10 @@ sg.DisplayOrder=9999; sg.IgnoreGuiInset=true
 sg.ZIndexBehavior=Enum.ZIndexBehavior.Sibling
 sg.Parent=player.PlayerGui
 
+-- PANEL 220 × 280
 local F=Instance.new("Frame",sg)
-F.Size=UDim2.new(0,220,0,210); F.Position=UDim2.new(0.5,-110,0.5,-105)
+F.Size=UDim2.new(0,220,0,280)
+F.Position=UDim2.new(0.5,-110,0.5,-140)
 F.BackgroundColor3=PNL; F.BorderSizePixel=0
 F.Active=true; F.Draggable=true; F.ZIndex=10
 uic(F,8); usk(F,BRD,1)
@@ -304,11 +279,11 @@ local TL=Instance.new("Frame",F)
 TL.Size=UDim2.new(1,-4,0,1); TL.Position=UDim2.new(0,2,0,0)
 TL.BackgroundColor3=SIL; TL.BorderSizePixel=0; TL.ZIndex=15; uic(TL,1)
 
--- TOPBAR
+-- TOPBAR — y=0, h=40
 local TB=Instance.new("Frame",F)
-TB.Size=UDim2.new(1,0,0,40); TB.BackgroundColor3=DEEP
-TB.BorderSizePixel=0; TB.ZIndex=11
-local tbU=Instance.new("UICorner",TB); tbU.CornerRadius=UDim.new(0,8)
+TB.Size=UDim2.new(1,0,0,40); TB.Position=UDim2.new(0,0,0,0)
+TB.BackgroundColor3=DEEP; TB.BorderSizePixel=0; TB.ZIndex=11
+uic(TB,8)
 local tbF=Instance.new("Frame",TB)
 tbF.Size=UDim2.new(1,0,0,8); tbF.Position=UDim2.new(0,0,1,-8)
 tbF.BackgroundColor3=DEEP; tbF.BorderSizePixel=0; tbF.ZIndex=11
@@ -335,16 +310,9 @@ XB.MouseButton1Click:Connect(function()
     task.delay(0.2,function() sg:Destroy() end)
 end)
 
--- BODY
-local Body=Instance.new("Frame",F)
-Body.Size=UDim2.new(1,-24,1,-52); Body.Position=UDim2.new(0,12,0,46)
-Body.BackgroundTransparency=1; Body.ZIndex=11
-local BL=Instance.new("UIListLayout",Body)
-BL.SortOrder=Enum.SortOrder.LayoutOrder; BL.Padding=UDim.new(0,6)
-
--- STATUS
-local SR=Instance.new("Frame",Body)
-SR.LayoutOrder=1; SR.Size=UDim2.new(1,0,0,24)
+-- ── STATUS — y=48, h=24
+local SR=Instance.new("Frame",F)
+SR.Size=UDim2.new(1,-24,0,24); SR.Position=UDim2.new(0,12,0,48)
 SR.BackgroundColor3=MID; SR.BorderSizePixel=0; SR.ZIndex=12
 uic(SR,5); usk(SR,BRD,1)
 
@@ -364,55 +332,55 @@ statusCB=function(msg,col)
     else SVl.TextColor3=WHT; SDot.BackgroundColor3=WHT end
 end
 
--- PROGRESS BAR
-local PBG=Instance.new("Frame",Body)
-PBG.LayoutOrder=2; PBG.Size=UDim2.new(1,0,0,16)
+-- ── PROGRESS BAR — y=80, h=18
+local PBG=Instance.new("Frame",F)
+PBG.Size=UDim2.new(1,-24,0,18); PBG.Position=UDim2.new(0,12,0,80)
 PBG.BackgroundColor3=MID; PBG.BorderSizePixel=0; PBG.ZIndex=12
 uic(PBG,5); usk(PBG,BRD,1)
 
 local PFill=Instance.new("Frame",PBG)
 PFill.Size=UDim2.new(0,0,1,0); PFill.BackgroundColor3=GR
-PFill.BorderSizePixel=0; PFill.ZIndex=13
-uic(PFill,5)
+PFill.BorderSizePixel=0; PFill.ZIndex=13; uic(PFill,5)
 
 local PPct=mkL(PBG,"0 / 52",8,DIM,Enum.Font.GothamBold,Enum.TextXAlignment.Center)
 PPct.Size=UDim2.new(1,0,1,0); PPct.ZIndex=14
 
 progressCB=function(cur,total)
-    local pct = cur/total
-    TweenSvc:Create(PFill,TweenInfo.new(0.2),
+    local pct=cur/total
+    TweenSvc:Create(PFill,TweenInfo.new(0.15),
         {Size=UDim2.new(pct,0,1,0)}):Play()
-    PPct.Text = cur.." / "..total
-    PPct.TextColor3 = pct >= 1 and GR or (pct > 0.7 and YL or DIM)
+    PPct.Text=cur.." / "..total
+    PPct.TextColor3=pct>=1 and GR or (pct>0.7 and YL or DIM)
 end
 
--- START INPUT ROW — tombol start dari CP berapa
-local InputRow=Instance.new("Frame",Body)
-InputRow.LayoutOrder=3; InputRow.Size=UDim2.new(1,0,0,26)
-InputRow.BackgroundColor3=MID; InputRow.BorderSizePixel=0; InputRow.ZIndex=12
-uic(InputRow,5); usk(InputRow,BRD,1)
+-- ── MULAI DARI CP — y=106, h=26
+local IR=Instance.new("Frame",F)
+IR.Size=UDim2.new(1,-24,0,26); IR.Position=UDim2.new(0,12,0,106)
+IR.BackgroundColor3=MID; IR.BorderSizePixel=0; IR.ZIndex=12
+uic(IR,5); usk(IR,BRD,1)
 
-local IKey=mkL(InputRow,"Mulai dari CP :",DIM,9,Enum.Font.GothamBold)
+local IKey=mkL(IR,"Mulai dari CP :",DIM,9,Enum.Font.GothamBold)
 IKey.Size=UDim2.new(0.6,0,1,0); IKey.Position=UDim2.new(0,8,0,0); IKey.ZIndex=13
 
-local IBox=Instance.new("TextBox",InputRow)
-IBox.Size=UDim2.new(0.38,0,0,18); IBox.Position=UDim2.new(0.62,-4,0.5,-9)
-IBox.BackgroundColor3=Color3.fromRGB(18,18,18); IBox.BorderSizePixel=0
+local IBox=Instance.new("TextBox",IR)
+IBox.Size=UDim2.new(0,50,0,18); IBox.Position=UDim2.new(1,-56,0.5,-9)
+IBox.BackgroundColor3=Color3.fromRGB(16,16,16); IBox.BorderSizePixel=0
 IBox.Text="1"; IBox.TextColor3=WHT; IBox.Font=Enum.Font.GothamBold
 IBox.TextSize=10; IBox.PlaceholderText="1"; IBox.ZIndex=13
+IBox.TextXAlignment=Enum.TextXAlignment.Center
 uic(IBox,4); usk(IBox,BRD2,1)
 
--- ANTI-LAG ROW
-local AL=Instance.new("Frame",Body)
-AL.LayoutOrder=4; AL.Size=UDim2.new(1,0,0,24)
+-- ── ANTI-LAG — y=140, h=26
+local AL=Instance.new("Frame",F)
+AL.Size=UDim2.new(1,-24,0,26); AL.Position=UDim2.new(0,12,0,140)
 AL.BackgroundColor3=MID; AL.BorderSizePixel=0; AL.ZIndex=12
 uic(AL,5); usk(AL,BRD,1)
 
-local ALK=mkL(AL,"ANTI-LAG",DIM,9,Enum.Font.GothamBold)
-ALK.Size=UDim2.new(0.6,0,1,0); ALK.Position=UDim2.new(0,8,0,0); ALK.ZIndex=13
+local ALK=mkL(AL,"ANTI-LAG / LOW GRAPHICS",DIM,9,Enum.Font.GothamBold)
+ALK.Size=UDim2.new(0.65,0,1,0); ALK.Position=UDim2.new(0,8,0,0); ALK.ZIndex=13
 
 local ALB=Instance.new("TextButton",AL)
-ALB.Size=UDim2.new(0,36,0,16); ALB.Position=UDim2.new(1,-42,0.5,-8)
+ALB.Size=UDim2.new(0,36,0,18); ALB.Position=UDim2.new(1,-42,0.5,-9)
 ALB.BackgroundColor3=MID; ALB.Text="ON"; ALB.TextColor3=WHT
 ALB.Font=Enum.Font.GothamBold; ALB.TextSize=8; ALB.BorderSizePixel=0; ALB.ZIndex=13
 uic(ALB,4); local ALsk=usk(ALB,SIL,1)
@@ -426,36 +394,33 @@ ALB.MouseButton1Click:Connect(function()
     if alOn then applyAntiLag() end
 end)
 
--- BUTTON ROW
-local BR=Instance.new("Frame",Body)
-BR.LayoutOrder=5; BR.Size=UDim2.new(1,0,0,38)
-BR.BackgroundTransparency=1; BR.ZIndex=12
-local BRL=Instance.new("UIListLayout",BR)
-BRL.FillDirection=Enum.FillDirection.Horizontal
-BRL.Padding=UDim.new(0,6); BRL.SortOrder=Enum.SortOrder.LayoutOrder
+-- ── SEPARATOR — y=174
+local Sep=Instance.new("Frame",F)
+Sep.Size=UDim2.new(1,-24,0,1); Sep.Position=UDim2.new(0,12,0,174)
+Sep.BackgroundColor3=BRD; Sep.BorderSizePixel=0; Sep.ZIndex=12
 
--- STOP BUTTON
-local StopBtn=Instance.new("TextButton",BR)
-StopBtn.LayoutOrder=1; StopBtn.Size=UDim2.new(0.35,0,1,0)
+-- ── STOP BUTTON — y=183, h=36
+local StopBtn=Instance.new("TextButton",F)
+StopBtn.Size=UDim2.new(0,72,0,36); StopBtn.Position=UDim2.new(0,12,0,183)
 StopBtn.BackgroundColor3=Color3.fromRGB(40,12,12)
 StopBtn.Text="■ STOP"; StopBtn.TextColor3=RD
-StopBtn.Font=Enum.Font.GothamBold; StopBtn.TextSize=10
+StopBtn.Font=Enum.Font.GothamBold; StopBtn.TextSize=11
 StopBtn.BorderSizePixel=0; StopBtn.ZIndex=12
-uic(StopBtn,7); usk(StopBtn,BRD2,1)
+uic(StopBtn,7); usk(StopBtn,Color3.fromRGB(80,20,20),1)
 StopBtn.MouseButton1Click:Connect(function()
     stopped=true
-    StopBtn.Text="✓ STOPPED"; StopBtn.TextColor3=YL
+    StopBtn.Text="✓ OK"; StopBtn.TextColor3=YL
     task.delay(1.5,function()
         StopBtn.Text="■ STOP"; StopBtn.TextColor3=RD
     end)
 end)
 
--- START BUTTON
-local StartBtn=Instance.new("TextButton",BR)
-StartBtn.LayoutOrder=2; StartBtn.Size=UDim2.new(0.65,-6,1,0)
-StartBtn.BackgroundColor3=WHT; StartBtn.Text="▶ START"
+-- ── START BUTTON — y=183, h=36
+local StartBtn=Instance.new("TextButton",F)
+StartBtn.Size=UDim2.new(1,-96,0,36); StartBtn.Position=UDim2.new(0,90,0,183)
+StartBtn.BackgroundColor3=WHT; StartBtn.Text="▶  START"
 StartBtn.TextColor3=DEEP; StartBtn.Font=Enum.Font.GothamBold
-StartBtn.TextSize=12; StartBtn.BorderSizePixel=0; StartBtn.ZIndex=12
+StartBtn.TextSize=13; StartBtn.BorderSizePixel=0; StartBtn.ZIndex=12
 uic(StartBtn,7); usk(StartBtn,BRD2,1)
 
 local pulsing=true
@@ -478,22 +443,19 @@ end)
 StartBtn.MouseButton1Click:Connect(function()
     if running then return end
     pulsing=false
-    StartBtn.BackgroundColor3=MID; StartBtn.TextColor3=YL; StartBtn.Text="▶ RUNNING"
-
-    -- baca input CP start
+    StartBtn.BackgroundColor3=MID; StartBtn.TextColor3=YL; StartBtn.Text="▶  RUNNING"
     local fromCP = tonumber(IBox.Text) or 1
     fromCP = math.clamp(fromCP, 1, #CP)
-
     runSequence(fromCP)
-
     task.spawn(function()
         while running do task.wait(0.1) end
         task.wait(0.4)
         StartBtn.BackgroundColor3=WHT; StartBtn.TextColor3=DEEP
-        StartBtn.Text="▶ START"; pulsing=true
+        StartBtn.Text="▶  START"; pulsing=true
     end)
 end)
 
+-- ── F9 toggle
 UIS.InputBegan:Connect(function(inp,gpe)
     if gpe then return end
     if inp.KeyCode==Enum.KeyCode.F9 then F.Visible=not F.Visible end
@@ -503,4 +465,4 @@ task.spawn(function()
     task.wait(0.5); applyAntiLag()
 end)
 
-print("Mount Zihan v4 | By Alfian | Auto CP 1-52 + Claim | F9 toggle")
+print("Mount Zihan v4 | By Alfian | F9 toggle")
