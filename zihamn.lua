@@ -38,59 +38,71 @@ local function applyAntiLag()
     end)
 end
 
+-- ══════════════════════════════
+-- CP LIST — CP4 diupdate
+-- ══════════════════════════════
 local CP={
-    Vector3.new(3.718,9.096,-814.067),
-    Vector3.new(15.466,0.587,-1582.924),
-    Vector3.new(53.692,-2.904,-2587.625),
-    Vector3.new(697.452,-2.904,-3379.274),
-    Vector3.new(763.092,-2.904,-4153.929),
-    Vector3.new(716.686,-0.304,-5268.813),
-    Vector3.new(718.528,9.096,-6662.083),
-    Vector3.new(733.307,65.369,-7357.708),
-    Vector3.new(729.570,45.096,-8257.154),
-    Vector3.new(693.703,29.096,-9473.930),
-    Vector3.new(632.958,17.096,-10757.811),
-    Vector3.new(-274.093,13.096,-10770.299),
-    Vector3.new(-2132.081,65.096,-10861.727),
-    Vector3.new(-2079.158,49.096,-12480.547),
-    Vector3.new(-1990.396,177.096,-13240.868),
-    Vector3.new(-568.436,173.096,-13232.987),
-    Vector3.new(364.100,161.096,-13303.718),
-    Vector3.new(1964.868,977.096,-13425.020),
-    Vector3.new(2916.492,969.096,-13417.518),
-    Vector3.new(3791.279,968.896,-13516.630),
-    Vector3.new(3807.351,985.096,-14792.040),
-    Vector3.new(3923.011,1061.096,-15996.030),
-    Vector3.new(3786.341,1053.096,-16987.496),
-    Vector3.new(2837.195,1109.096,-16993.457),
-    Vector3.new(2091.328,1193.096,-17300.779),
-    Vector3.new(1784.328,1185.096,-18237.713),
-    Vector3.new(1762.944,1333.096,-19254.902),
-    Vector3.new(1746.264,1297.096,-20030.475),
-    Vector3.new(1782.646,1269.096,-21033.840),
-    Vector3.new(1769.587,1477.096,-21856.654),
-    Vector3.new(1796.448,1485.096,-22655.854),
-    Vector3.new(1795.741,1509.096,-23597.246),
-    Vector3.new(1885.794,1505.096,-25383.686),
-    Vector3.new(1919.203,1493.096,-26686.721),
-    Vector3.new(1978.322,1249.096,-27823.242),
-    Vector3.new(2124.946,1557.096,-28848.211),
-    Vector3.new(4529.437,1557.096,-28730.084),
-    Vector3.new(4575.867,1545.096,-27846.295),
-    Vector3.new(5585.702,1865.096,-27786.719),
-    Vector3.new(5574.089,1869.096,-26634.725),
-    Vector3.new(5656.031,1989.096,-25738.797),
-    Vector3.new(6650.281,2161.096,-25623.770),
-    Vector3.new(6632.104,2153.096,-24755.275),
-    Vector3.new(6627.148,2149.096,-23977.988),
-    Vector3.new(6660.656,2181.096,-23023.488),
-    Vector3.new(6545.862,2133.096,-22057.986),
-    Vector3.new(6628.912,2167.135,-21425.582),
-    Vector3.new(7462.223,2165.096,-21428.570),
-    Vector3.new(8300.794,2540.896,-21567.137),
-    Vector3.new(9170.898,5054.228,-21355.643),
-    Vector3.new(9209.609,5054.228,-21342.803),
-    Vector3.new(9814.756,2951.411,-21591.408),
+    Vector3.new(3.718,    9.096,    -814.067),
+    Vector3.new(15.466,   0.587,    -1582.924),
+    Vector3.new(53.692,   -2.904,   -2587.625),
+    Vector3.new(698.164,  -2.904,   -3374.121), -- CP4 FIXED
+    Vector3.new(763.092,  -2.904,   -4153.929),
+    Vector3.new(716.686,  -0.304,   -5268.813),
+    Vector3.new(718.528,  9.096,    -6662.083),
+    Vector3.new(733.307,  65.369,   -7357.708),
+    Vector3.new(729.570,  45.096,   -8257.154),
+    Vector3.new(693.703,  29.096,   -9473.930),
+    Vector3.new(632.958,  17.096,   -10757.811),
+    Vector3.new(-274.093, 13.096,   -10770.299),
+    Vector3.new(-2132.081,65.096,   -10861.727),
+    Vector3.new(-2079.158,49.096,   -12480.547),
+    Vector3.new(-1990.396,177.096,  -13240.868),
+    Vector3.new(-568.436, 173.096,  -13232.987),
+    Vector3.new(364.100,  161.096,  -13303.718),
+    Vector3.new(1964.868, 977.096,  -13425.020),
+    Vector3.new(2916.492, 969.096,  -13417.518),
+    Vector3.new(3791.279, 968.896,  -13516.630),
+    Vector3.new(3807.351, 985.096,  -14792.040),
+    Vector3.new(3923.011, 1061.096, -15996.030),
+    Vector3.new(3786.341, 1053.096, -16987.496),
+    Vector3.new(2837.195, 1109.096, -16993.457),
+    Vector3.new(2091.328, 1193.096, -17300.779),
+    Vector3.new(1784.328, 1185.096, -18237.713),
+    Vector3.new(1762.944, 1333.096, -19254.902),
+    Vector3.new(1746.264, 1297.096, -20030.475),
+    Vector3.new(1782.646, 1269.096, -21033.840),
+    Vector3.new(1769.587, 1477.096, -21856.654),
+    Vector3.new(1796.448, 1485.096, -22655.854),
+    Vector3.new(1795.741, 1509.096, -23597.246),
+    Vector3.new(1885.794, 1505.096, -25383.686),
+    Vector3.new(1919.203, 1493.096, -26686.721),
+    Vector3.new(1978.322, 1249.096, -27823.242),
+    Vector3.new(2124.946, 1557.096, -28848.211),
+    Vector3.new(4529.437, 1557.096, -28730.084),
+    Vector3.new(4575.867, 1545.096, -27846.295),
+    Vector3.new(5585.702, 1865.096, -27786.719),
+    Vector3.new(5574.089, 1869.096, -26634.725),
+    Vector3.new(5656.031, 1989.096, -25738.797),
+    Vector3.new(6650.281, 2161.096, -25623.770),
+    Vector3.new(6632.104, 2153.096, -24755.275),
+    Vector3.new(6627.148, 2149.096, -23977.988),
+    Vector3.new(6660.656, 2181.096, -23023.488),
+    Vector3.new(6545.862, 2133.096, -22057.986),
+    Vector3.new(6628.912, 2167.135, -21425.582),
+    Vector3.new(7462.223, 2165.096, -21428.570),
+    Vector3.new(8300.794, 2540.896, -21567.137),
+    Vector3.new(9170.898, 5054.228, -21355.643),
+    Vector3.new(9209.609, 5054.228, -21342.803),
+    Vector3.new(9814.756, 2951.411, -21591.408),
+}
+
+-- CP yang butuh retry karena trigger zone kecil
+-- format: [index] = jumlah retry
+local CP_RETRY = {
+    [4]  = 3,
+    [50] = 3,
+    [51] = 3,
+    [52] = 3,
 }
 
 local CLAIM=Vector3.new(10284.1,3013.4,-21465.0)
@@ -103,7 +115,6 @@ local YL=Color3.fromRGB(230,200,100)
 local WHT=Color3.fromRGB(230,230,230)
 local DIM=Color3.fromRGB(100,100,100)
 
--- forward refs
 local SVl,SDot,PFill,PPct
 
 local function setStatus(msg,col)
@@ -156,7 +167,10 @@ local function tryFire(pr)
     end
 end
 
-local function runSequence(fromCP)
+-- ══════════════════════════════
+-- CLAIM SEQUENCE (tanpa CP)
+-- ══════════════════════════════
+local function runClaimOnly()
     if running then return end
     running=true;stopped=false
     task.spawn(function()
@@ -165,15 +179,10 @@ local function runSequence(fromCP)
         if not hrp then setStatus("ERROR","err");running=false;return end
         local hum=char:FindFirstChildOfClass("Humanoid")
         if hum then hum.WalkSpeed=0 end
-        local from=math.clamp(fromCP or 1,1,#CP)
-        for i=from,#CP do
-            if stopped then setStatus("STOPPED","err");running=false;return end
-            setStatus("CP "..i.."/"..#CP,"wait")
-            setProgress(i,#CP)
-            hrp.CFrame=CFrame.new(CP[i]+Vector3.new(0,5,0))
-            task.wait(i>=50 and 0.35 or 0.18)
-        end
+
         setStatus("MENUJU CLAIM","wait")
+
+        -- ZihanV3 sequence
         hrp.CFrame=CFrame.new(9874.0,2960.8,-21571.6);task.wait(0.3)
         if stopped then setStatus("STOPPED","err");running=false;return end
         hrp.CFrame=CFrame.new(9233.1,5064.2,-21332.8);task.wait(0.3)
@@ -181,7 +190,10 @@ local function runSequence(fromCP)
         hrp.CFrame=CFrame.new(9814.0,2956.7,-21591.3);task.wait(0.25)
         if stopped then setStatus("STOPPED","err");running=false;return end
         hrp.CFrame=CFrame.new(CLAIM+Vector3.new(0,5,0));task.wait(0.3)
-        if hum then hum.WalkSpeed=16 end;task.wait(0.1)
+
+        if hum then hum.WalkSpeed=16 end
+        task.wait(0.1)
+
         local result=findPrimary()
         if result then
             local dir=(hrp.Position-result.pos)
@@ -195,7 +207,86 @@ local function runSequence(fromCP)
             result=findPrimary()
             if result then tryFire(result.prompt) end
         end
-        setStatus("DONE","done");setProgress(#CP,#CP)
+
+        setStatus("DONE — CLAIM MANUAL","done")
+        setProgress(#CP,#CP)
+        pcall(function()
+            game:GetService("StarterGui"):SetCore("SendNotification",
+                {Title="Zihan v4",Text="Selesai! Claim sekarang.",Duration=3})
+        end)
+        running=false
+    end)
+end
+
+-- ══════════════════════════════
+-- AUTO CP + CLAIM SEQUENCE
+-- ══════════════════════════════
+local function runAutoCP(fromCP)
+    if running then return end
+    running=true;stopped=false
+    task.spawn(function()
+        local char=player.Character or player.CharacterAdded:Wait()
+        local hrp=char:WaitForChild("HumanoidRootPart",5)
+        if not hrp then setStatus("ERROR","err");running=false;return end
+        local hum=char:FindFirstChildOfClass("Humanoid")
+        if hum then hum.WalkSpeed=0 end
+
+        local from=math.clamp(fromCP or 1,1,#CP)
+
+        for i=from,#CP do
+            if stopped then setStatus("STOPPED","err");running=false;return end
+            setStatus("CP "..i.."/"..#CP,"wait")
+            setProgress(i,#CP)
+
+            local pt=CP[i]
+            local retries=CP_RETRY[i] or 1
+
+            -- teleport dengan retry untuk CP kritis
+            for r=1,retries do
+                hrp.CFrame=CFrame.new(pt+Vector3.new(0,5,0))
+                task.wait(0.15)
+                -- cek apakah sudah dekat (dalam 10 stud)
+                local dist=(hrp.Position-pt).Magnitude
+                if dist < 10 then break end
+                -- belum dekat, coba offset sedikit dan retry
+                hrp.CFrame=CFrame.new(pt+Vector3.new(0,3,0))
+                task.wait(0.15)
+            end
+
+            -- delay lebih lama di CP kritis
+            task.wait(i>=50 and 0.3 or (CP_RETRY[i] and 0.25 or 0.16))
+        end
+
+        -- lanjut claim
+        setStatus("MENUJU CLAIM","wait")
+
+        hrp.CFrame=CFrame.new(9874.0,2960.8,-21571.6);task.wait(0.3)
+        if stopped then setStatus("STOPPED","err");running=false;return end
+        hrp.CFrame=CFrame.new(9233.1,5064.2,-21332.8);task.wait(0.3)
+        if stopped then setStatus("STOPPED","err");running=false;return end
+        hrp.CFrame=CFrame.new(9814.0,2956.7,-21591.3);task.wait(0.25)
+        if stopped then setStatus("STOPPED","err");running=false;return end
+        hrp.CFrame=CFrame.new(CLAIM+Vector3.new(0,5,0));task.wait(0.3)
+
+        if hum then hum.WalkSpeed=16 end
+        task.wait(0.1)
+
+        local result=findPrimary()
+        if result then
+            local dir=(hrp.Position-result.pos)
+            local safe=result.pos+(dir.Magnitude>0.1 and dir.Unit*6 or Vector3.new(0,0,6))
+            hrp.CFrame=CFrame.new(safe+Vector3.new(0,3,0));task.wait(0.2)
+            if hum then hum.Jump=true end;task.wait(0.1)
+            tryFire(result.prompt)
+        else
+            hrp.CFrame=CFrame.new(CLAIM+Vector3.new(0,3,0));task.wait(0.2)
+            if hum then hum.Jump=true end;task.wait(0.1)
+            result=findPrimary()
+            if result then tryFire(result.prompt) end
+        end
+
+        setStatus("DONE — CLAIM MANUAL","done")
+        setProgress(#CP,#CP)
         pcall(function()
             game:GetService("StarterGui"):SetCore("SendNotification",
                 {Title="Zihan v4",Text="Selesai! Claim sekarang.",Duration=3})
@@ -206,9 +297,6 @@ end
 
 -- ══════════════════════════════
 -- GUI
--- Semua ukuran dalam pixel absolut
--- Panel lebar 280px tinggi 230px
--- Posisi dari pojok kiri atas layar
 -- ══════════════════════════════
 local PNL=Color3.fromRGB(14,14,14)
 local MID=Color3.fromRGB(22,22,22)
@@ -219,35 +307,31 @@ local DEEP=Color3.fromRGB(8,8,8)
 
 local sg=Instance.new("ScreenGui")
 sg.Name="ZihanV4";sg.ResetOnSpawn=false
-sg.DisplayOrder=9999
-sg.IgnoreGuiInset=false  -- FALSE agar tidak terpotong di mobile
+sg.DisplayOrder=9999;sg.IgnoreGuiInset=false
 sg.ZIndexBehavior=Enum.ZIndexBehavior.Sibling
 sg.Parent=player.PlayerGui
 
--- PANEL: lebar 280, tinggi 230
--- posisi: kiri-tengah layar, agak ke atas
+-- PANEL 280 × 260
 local F=Instance.new("Frame",sg)
-F.Size=UDim2.new(0,280,0,230)
-F.Position=UDim2.new(0.5,-140,0.5,-115)
+F.Size=UDim2.new(0,280,0,260)
+F.Position=UDim2.new(0.5,-140,0.5,-130)
 F.BackgroundColor3=PNL;F.BorderSizePixel=0
 F.Active=true;F.Draggable=true;F.ZIndex=10
-do local u=Instance.new("UICorner",F);u.CornerRadius=UDim.new(0,8) end
-do local s=Instance.new("UIStroke",F);s.Color=BRD;s.Thickness=1 end
+do Instance.new("UICorner",F).CornerRadius=UDim.new(0,8) end
+do Instance.new("UIStroke",F).Color=BRD end
 
--- accent
+-- accent top
 local ac=Instance.new("Frame",F)
 ac.Size=UDim2.new(1,-4,0,1);ac.Position=UDim2.new(0,2,0,0)
 ac.BackgroundColor3=SIL;ac.BorderSizePixel=0;ac.ZIndex=15
 do Instance.new("UICorner",ac).CornerRadius=UDim.new(0,1) end
 
--- helper buat frame card
-local function card(yPos, h)
+local function card(yPos,h)
     local fr=Instance.new("Frame",F)
-    fr.Size=UDim2.new(1,-24,0,h)
-    fr.Position=UDim2.new(0,12,0,yPos)
+    fr.Size=UDim2.new(1,-24,0,h);fr.Position=UDim2.new(0,12,0,yPos)
     fr.BackgroundColor3=MID;fr.BorderSizePixel=0;fr.ZIndex=12
-    do local u=Instance.new("UICorner",fr);u.CornerRadius=UDim.new(0,5) end
-    do local s=Instance.new("UIStroke",fr);s.Color=BRD;s.Thickness=1 end
+    do Instance.new("UICorner",fr).CornerRadius=UDim.new(0,5) end
+    do Instance.new("UIStroke",fr).Color=BRD end
     return fr
 end
 local function lbl(p,txt,col,sz,font,xa)
@@ -259,18 +343,16 @@ local function lbl(p,txt,col,sz,font,xa)
     return l
 end
 
--- ── TOPBAR y=0 h=36
+-- TOPBAR y=0 h=36
 local TB=Instance.new("Frame",F)
 TB.Size=UDim2.new(1,0,0,36);TB.Position=UDim2.new(0,0,0,0)
 TB.BackgroundColor3=DEEP;TB.BorderSizePixel=0;TB.ZIndex=11
-do local u=Instance.new("UICorner",TB);u.CornerRadius=UDim.new(0,8) end
-do local fx=Instance.new("Frame",TB);fx.Size=UDim2.new(1,0,0,8)
-   fx.Position=UDim2.new(0,0,1,-8);fx.BackgroundColor3=DEEP;fx.BorderSizePixel=0;fx.ZIndex=11 end
-do local bx=Instance.new("Frame",TB);bx.Size=UDim2.new(1,0,0,1)
-   bx.Position=UDim2.new(0,0,1,-1);bx.BackgroundColor3=BRD;bx.BorderSizePixel=0;bx.ZIndex=12 end
+do Instance.new("UICorner",TB).CornerRadius=UDim.new(0,8) end
+do local fx=Instance.new("Frame",TB);fx.Size=UDim2.new(1,0,0,8);fx.Position=UDim2.new(0,0,1,-8);fx.BackgroundColor3=DEEP;fx.BorderSizePixel=0;fx.ZIndex=11 end
+do local bx=Instance.new("Frame",TB);bx.Size=UDim2.new(1,0,0,1);bx.Position=UDim2.new(0,0,1,-1);bx.BackgroundColor3=BRD;bx.BorderSizePixel=0;bx.ZIndex=12 end
 
-local tl1=lbl(TB,"MOUNT ZIHAN v4",WHT,11,Enum.Font.GothamBold);tl1.Size=UDim2.new(1,-44,0,14);tl1.Position=UDim2.new(0,10,0,5)
-local tl2=lbl(TB,"BY ALFIAN · AUTO CP 1/52",DIM,8,Enum.Font.Gotham);tl2.Size=UDim2.new(1,-44,0,11);tl2.Position=UDim2.new(0,10,0,20)
+do local l=lbl(TB,"MOUNT ZIHAN v4",WHT,11,Enum.Font.GothamBold);l.Size=UDim2.new(1,-44,0,14);l.Position=UDim2.new(0,10,0,5) end
+do local l=lbl(TB,"BY ALFIAN · AUTO CP 1/52",DIM,8,Enum.Font.Gotham);l.Size=UDim2.new(1,-44,0,11);l.Position=UDim2.new(0,10,0,20) end
 
 local XB=Instance.new("TextButton",TB)
 XB.Size=UDim2.new(0,22,0,22);XB.Position=UDim2.new(1,-26,0.5,-11)
@@ -285,26 +367,26 @@ XB.MouseButton1Click:Connect(function()
     task.delay(0.15,function() sg:Destroy() end)
 end)
 
--- ── STATUS  y=44 h=24
+-- STATUS y=44 h=24
 local sr=card(44,24)
 SDot=Instance.new("Frame",sr);SDot.Size=UDim2.new(0,5,0,5);SDot.Position=UDim2.new(0,8,0.5,-2)
 SDot.BackgroundColor3=GR;SDot.BorderSizePixel=0;SDot.ZIndex=13
 do Instance.new("UICorner",SDot).CornerRadius=UDim.new(1,0) end
-SVl=lbl(sr,"READY",GR,10,Enum.Font.GothamBold);SVl.Size=UDim2.new(1,-22,1,0);SVl.Position=UDim2.new(0,18,0,0);SVl.TextTruncate=Enum.TextTruncate.AtEnd
+SVl=lbl(sr,"READY",GR,10,Enum.Font.GothamBold)
+SVl.Size=UDim2.new(1,-22,1,0);SVl.Position=UDim2.new(0,18,0,0)
+SVl.TextTruncate=Enum.TextTruncate.AtEnd
 
--- ── PROGRESS  y=76 h=18
+-- PROGRESS y=76 h=18
 local pb=card(76,18)
-pb.BackgroundColor3=MID
 PFill=Instance.new("Frame",pb);PFill.Size=UDim2.new(0,0,1,0)
 PFill.BackgroundColor3=GR;PFill.BorderSizePixel=0;PFill.ZIndex=13
 do Instance.new("UICorner",PFill).CornerRadius=UDim.new(0,5) end
-PPct=lbl(pb,"0 / 52",DIM,8,Enum.Font.GothamBold,Enum.TextXAlignment.Center);PPct.Size=UDim2.new(1,0,1,0)
+PPct=lbl(pb,"0 / 52",DIM,8,Enum.Font.GothamBold,Enum.TextXAlignment.Center)
+PPct.Size=UDim2.new(1,0,1,0)
 
--- ── MULAI DARI CP  y=102 h=24
+-- MULAI DARI CP y=102 h=24
 local ir=card(102,24)
-lbl(ir,"Mulai dari CP :",DIM,9,Enum.Font.GothamBold).Size=UDim2.new(0.6,0,1,0);
 do local l=lbl(ir,"Mulai dari CP :",DIM,9,Enum.Font.GothamBold);l.Size=UDim2.new(0.6,0,1,0);l.Position=UDim2.new(0,8,0,0) end
-
 local IBox=Instance.new("TextBox",ir)
 IBox.Size=UDim2.new(0,46,0,18);IBox.Position=UDim2.new(1,-50,0.5,-9)
 IBox.BackgroundColor3=Color3.fromRGB(16,16,16);IBox.BorderSizePixel=0
@@ -313,11 +395,9 @@ IBox.TextSize=10;IBox.TextXAlignment=Enum.TextXAlignment.Center;IBox.ZIndex=13
 do Instance.new("UICorner",IBox).CornerRadius=UDim.new(0,4) end
 do Instance.new("UIStroke",IBox).Color=BRD2 end
 
--- ── ANTI-LAG  y=134 h=24
+-- ANTI-LAG y=134 h=24
 local al=card(134,24)
-lbl(al,"ANTI-LAG",DIM,9,Enum.Font.GothamBold).Size=UDim2.new(0.5,0,1,0)
 do local l=lbl(al,"ANTI-LAG",DIM,9,Enum.Font.GothamBold);l.Size=UDim2.new(0.5,0,1,0);l.Position=UDim2.new(0,8,0,0) end
-
 local ALB=Instance.new("TextButton",al)
 ALB.Size=UDim2.new(0,38,0,18);ALB.Position=UDim2.new(1,-42,0.5,-9)
 ALB.BackgroundColor3=MID;ALB.Text="ON";ALB.TextColor3=WHT
@@ -326,41 +406,58 @@ do Instance.new("UICorner",ALB).CornerRadius=UDim.new(0,4) end
 local ALsk=Instance.new("UIStroke",ALB);ALsk.Color=SIL
 local alOn=true
 ALB.MouseButton1Click:Connect(function()
-    alOn=not alOn
-    ALB.Text=alOn and "ON" or "OFF"
-    ALB.TextColor3=alOn and WHT or DIM
-    ALsk.Color=alOn and SIL or BRD
+    alOn=not alOn;ALB.Text=alOn and "ON" or "OFF"
+    ALB.TextColor3=alOn and WHT or DIM;ALsk.Color=alOn and SIL or BRD
     if alOn then applyAntiLag() end
 end)
 
--- ── SEPARATOR  y=166
+-- SEPARATOR y=166
 local sep=Instance.new("Frame",F)
 sep.Size=UDim2.new(1,-24,0,1);sep.Position=UDim2.new(0,12,0,166)
 sep.BackgroundColor3=BRD;sep.BorderSizePixel=0;sep.ZIndex=12
 
--- ── STOP  y=174 h=44
+-- STOP y=174 h=42  (kiri)
 local StopBtn=Instance.new("TextButton",F)
-StopBtn.Size=UDim2.new(0,80,0,44);StopBtn.Position=UDim2.new(0,12,0,174)
+StopBtn.Size=UDim2.new(0,68,0,42);StopBtn.Position=UDim2.new(0,12,0,174)
 StopBtn.BackgroundColor3=Color3.fromRGB(38,10,10)
 StopBtn.Text="■ STOP";StopBtn.TextColor3=RD
-StopBtn.Font=Enum.Font.GothamBold;StopBtn.TextSize=11;StopBtn.BorderSizePixel=0;StopBtn.ZIndex=12
+StopBtn.Font=Enum.Font.GothamBold;StopBtn.TextSize=10;StopBtn.BorderSizePixel=0;StopBtn.ZIndex=12
 do Instance.new("UICorner",StopBtn).CornerRadius=UDim.new(0,7) end
 do local s=Instance.new("UIStroke",StopBtn);s.Color=Color3.fromRGB(70,18,18) end
 StopBtn.MouseButton1Click:Connect(function()
-    stopped=true;StopBtn.Text="✓";StopBtn.TextColor3=YL
+    stopped=true;StopBtn.Text="✓ OK";StopBtn.TextColor3=YL
     task.delay(1.5,function() StopBtn.Text="■ STOP";StopBtn.TextColor3=RD end)
 end)
 
--- ── START  y=174 h=44
+-- AUTO CLAIM (skip CP) y=174 h=42  (tengah)
+local ClaimBtn=Instance.new("TextButton",F)
+ClaimBtn.Size=UDim2.new(0,88,0,42);ClaimBtn.Position=UDim2.new(0,88,0,174)
+ClaimBtn.BackgroundColor3=Color3.fromRGB(10,35,55)
+ClaimBtn.Text="⚡ CLAIM";ClaimBtn.TextColor3=Color3.fromRGB(100,200,255)
+ClaimBtn.Font=Enum.Font.GothamBold;ClaimBtn.TextSize=10;ClaimBtn.BorderSizePixel=0;ClaimBtn.ZIndex=12
+do Instance.new("UICorner",ClaimBtn).CornerRadius=UDim.new(0,7) end
+do local s=Instance.new("UIStroke",ClaimBtn);s.Color=Color3.fromRGB(30,80,120) end
+
+-- AUTO CP+CLAIM y=174 h=42  (kanan)
 local StartBtn=Instance.new("TextButton",F)
-StartBtn.Size=UDim2.new(1,-104,0,44);StartBtn.Position=UDim2.new(0,100,0,174)
-StartBtn.BackgroundColor3=WHT;StartBtn.Text="▶  START"
+StartBtn.Size=UDim2.new(0,88,0,42);StartBtn.Position=UDim2.new(1,-100,0,174)
+StartBtn.BackgroundColor3=WHT;StartBtn.Text="▶ AUTO CP"
 StartBtn.TextColor3=DEEP;StartBtn.Font=Enum.Font.GothamBold
-StartBtn.TextSize=14;StartBtn.BorderSizePixel=0;StartBtn.ZIndex=12
+StartBtn.TextSize=10;StartBtn.BorderSizePixel=0;StartBtn.ZIndex=12
 do Instance.new("UICorner",StartBtn).CornerRadius=UDim.new(0,7) end
 do Instance.new("UIStroke",StartBtn).Color=BRD2 end
 
--- pulse
+-- label info di bawah tombol
+do
+    local info=Instance.new("TextLabel",F)
+    info.Size=UDim2.new(1,-24,0,12);info.Position=UDim2.new(0,12,0,222)
+    info.BackgroundTransparency=1;info.ZIndex=12
+    info.Text="⚡ CLAIM = skip CP langsung claim  |  F9 toggle"
+    info.TextColor3=Color3.fromRGB(45,45,55);info.Font=Enum.Font.Gotham
+    info.TextSize=7;info.TextXAlignment=Enum.TextXAlignment.Center
+end
+
+-- pulse START
 local pulsing=true
 task.spawn(function()
     while sg and sg.Parent do
@@ -377,17 +474,32 @@ task.spawn(function()
     end
 end)
 
+-- AUTO CP handler
 StartBtn.MouseButton1Click:Connect(function()
     if running then return end
     pulsing=false
-    StartBtn.BackgroundColor3=MID;StartBtn.TextColor3=YL;StartBtn.Text="▶  RUNNING"
+    StartBtn.BackgroundColor3=MID;StartBtn.TextColor3=YL;StartBtn.Text="▶ RUNNING"
     local from=math.clamp(tonumber(IBox.Text) or 1,1,#CP)
-    runSequence(from)
+    runAutoCP(from)
     task.spawn(function()
         while running do task.wait(0.1) end
         task.wait(0.4)
         StartBtn.BackgroundColor3=WHT;StartBtn.TextColor3=DEEP
-        StartBtn.Text="▶  START";pulsing=true
+        StartBtn.Text="▶ AUTO CP";pulsing=true
+    end)
+end)
+
+-- CLAIM ONLY handler
+ClaimBtn.MouseButton1Click:Connect(function()
+    if running then return end
+    ClaimBtn.BackgroundColor3=Color3.fromRGB(8,25,40)
+    ClaimBtn.Text="⏳ ...";ClaimBtn.TextColor3=YL
+    runClaimOnly()
+    task.spawn(function()
+        while running do task.wait(0.1) end
+        task.wait(0.4)
+        ClaimBtn.BackgroundColor3=Color3.fromRGB(10,35,55)
+        ClaimBtn.Text="⚡ CLAIM";ClaimBtn.TextColor3=Color3.fromRGB(100,200,255)
     end)
 end)
 
