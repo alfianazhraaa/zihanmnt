@@ -9,20 +9,20 @@ local TweenSvc = game:GetService("TweenService")
 local player   = Players.LocalPlayer
 
 pcall(function()
-    for _, g in ipairs(player.PlayerGui:GetChildren()) do
-        if g.Name == "ZihanV4" then g:Destroy() end
+    for _,g in ipairs(player.PlayerGui:GetChildren()) do
+        if g.Name=="ZihanV4" then g:Destroy() end
     end
 end)
 
 local function applyAntiLag()
-    pcall(function() settings().Rendering.QualityLevel = Enum.QualityLevel.Level01 end)
-    pcall(function() settings().Rendering.MeshPartDetailLevel = Enum.MeshPartDetailLevel.Level01 end)
-    pcall(function() workspace.GlobalShadows = false end)
-    pcall(function() settings().Rendering.MaxFrameRate = 15 end)
+    pcall(function() settings().Rendering.QualityLevel=Enum.QualityLevel.Level01 end)
+    pcall(function() settings().Rendering.MeshPartDetailLevel=Enum.MeshPartDetailLevel.Level01 end)
+    pcall(function() workspace.GlobalShadows=false end)
+    pcall(function() settings().Rendering.MaxFrameRate=15 end)
     pcall(function()
-        local L = game:GetService("Lighting")
-        L.GlobalShadows=false; L.Brightness=1
-        L.EnvironmentDiffuseScale=0; L.EnvironmentSpecularScale=0
+        local L=game:GetService("Lighting")
+        L.GlobalShadows=false;L.Brightness=1
+        L.EnvironmentDiffuseScale=0;L.EnvironmentSpecularScale=0
         for _,v in ipairs(L:GetChildren()) do
             if v:IsA("BlurEffect") or v:IsA("SunRaysEffect") or
                v:IsA("ColorCorrectionEffect") or v:IsA("BloomEffect") or
@@ -38,7 +38,7 @@ local function applyAntiLag()
     end)
 end
 
-local CP = {
+local CP={
     Vector3.new(3.718,9.096,-814.067),
     Vector3.new(15.466,0.587,-1582.924),
     Vector3.new(53.692,-2.904,-2587.625),
@@ -93,12 +93,37 @@ local CP = {
     Vector3.new(9814.756,2951.411,-21591.408),
 }
 
-local CLAIM = Vector3.new(10284.1, 3013.4, -21465.0)
-local running = false
-local stopped = false
+local CLAIM=Vector3.new(10284.1,3013.4,-21465.0)
+local running=false
+local stopped=false
+
+local GR=Color3.fromRGB(150,255,170)
+local RD=Color3.fromRGB(255,100,100)
+local YL=Color3.fromRGB(230,200,100)
+local WHT=Color3.fromRGB(230,230,230)
+local DIM=Color3.fromRGB(100,100,100)
+
+-- forward refs
+local SVl,SDot,PFill,PPct
+
+local function setStatus(msg,col)
+    if not SVl then return end
+    SVl.Text=msg
+    local c=col=="done" and GR or col=="err" and RD or col=="wait" and YL or WHT
+    SVl.TextColor3=c
+    if SDot then SDot.BackgroundColor3=c end
+end
+
+local function setProgress(cur,total)
+    if not PFill or not PPct then return end
+    local pct=cur/total
+    PFill.Size=UDim2.new(pct,0,1,0)
+    PPct.Text=cur.." / "..total
+    PPct.TextColor3=pct>=1 and GR or pct>0.7 and YL or DIM
+end
 
 local function findPrimary()
-    local best, bestDist = nil, math.huge
+    local best,bestDist=nil,math.huge
     for _,v in ipairs(workspace:GetDescendants()) do
         if v:IsA("ProximityPrompt") then
             local at=(v.ActionText or ""):lower()
@@ -114,7 +139,7 @@ local function findPrimary()
                     end
                     if pos then
                         local d=(pos-CLAIM).Magnitude
-                        if d<bestDist then bestDist=d; best={prompt=v,pos=pos} end
+                        if d<bestDist then bestDist=d;best={prompt=v,pos=pos} end
                     end
                 end
             end
@@ -131,101 +156,59 @@ local function tryFire(pr)
     end
 end
 
--- forward refs untuk UI callback
-local SVl, SDot, PFill, PPct
-local GR=Color3.fromRGB(150,255,170)
-local RD=Color3.fromRGB(255,100,100)
-local YL=Color3.fromRGB(230,200,100)
-local WHT=Color3.fromRGB(230,230,230)
-local DIM=Color3.fromRGB(100,100,100)
-
-local function setStatus(msg, col)
-    if not SVl then return end
-    SVl.Text=msg
-    local c = col=="done" and GR or col=="err" and RD or col=="wait" and YL or WHT
-    SVl.TextColor3=c
-    if SDot then SDot.BackgroundColor3=c end
-end
-
-local function setProgress(cur, total)
-    if not PFill or not PPct then return end
-    local pct = cur/total
-    PFill.Size = UDim2.new(pct, 0, 1, 0)
-    PPct.Text = cur.." / "..total
-    PPct.TextColor3 = pct>=1 and GR or pct>0.7 and YL or DIM
-end
-
 local function runSequence(fromCP)
     if running then return end
-    running=true; stopped=false
-
+    running=true;stopped=false
     task.spawn(function()
         local char=player.Character or player.CharacterAdded:Wait()
         local hrp=char:WaitForChild("HumanoidRootPart",5)
-        if not hrp then setStatus("ERROR","err"); running=false; return end
+        if not hrp then setStatus("ERROR","err");running=false;return end
         local hum=char:FindFirstChildOfClass("Humanoid")
         if hum then hum.WalkSpeed=0 end
-
-        local from=math.clamp(fromCP or 1, 1, #CP)
-
-        for i=from, #CP do
-            if stopped then setStatus("STOPPED","err"); running=false; return end
-            setStatus("CP "..i.."/"..#CP, "wait")
-            setProgress(i, #CP)
+        local from=math.clamp(fromCP or 1,1,#CP)
+        for i=from,#CP do
+            if stopped then setStatus("STOPPED","err");running=false;return end
+            setStatus("CP "..i.."/"..#CP,"wait")
+            setProgress(i,#CP)
             hrp.CFrame=CFrame.new(CP[i]+Vector3.new(0,5,0))
             task.wait(i>=50 and 0.35 or 0.18)
         end
-
         setStatus("MENUJU CLAIM","wait")
-
-        hrp.CFrame=CFrame.new(9874.0,2960.8,-21571.6)
-        task.wait(0.3)
-        if stopped then setStatus("STOPPED","err"); running=false; return end
-
-        hrp.CFrame=CFrame.new(9233.1,5064.2,-21332.8)
-        task.wait(0.3)
-        if stopped then setStatus("STOPPED","err"); running=false; return end
-
-        hrp.CFrame=CFrame.new(9814.0,2956.7,-21591.3)
-        task.wait(0.25)
-        if stopped then setStatus("STOPPED","err"); running=false; return end
-
-        hrp.CFrame=CFrame.new(CLAIM+Vector3.new(0,5,0))
-        task.wait(0.3)
-
-        if hum then hum.WalkSpeed=16 end
-        task.wait(0.1)
-
+        hrp.CFrame=CFrame.new(9874.0,2960.8,-21571.6);task.wait(0.3)
+        if stopped then setStatus("STOPPED","err");running=false;return end
+        hrp.CFrame=CFrame.new(9233.1,5064.2,-21332.8);task.wait(0.3)
+        if stopped then setStatus("STOPPED","err");running=false;return end
+        hrp.CFrame=CFrame.new(9814.0,2956.7,-21591.3);task.wait(0.25)
+        if stopped then setStatus("STOPPED","err");running=false;return end
+        hrp.CFrame=CFrame.new(CLAIM+Vector3.new(0,5,0));task.wait(0.3)
+        if hum then hum.WalkSpeed=16 end;task.wait(0.1)
         local result=findPrimary()
         if result then
             local dir=(hrp.Position-result.pos)
             local safe=result.pos+(dir.Magnitude>0.1 and dir.Unit*6 or Vector3.new(0,0,6))
-            hrp.CFrame=CFrame.new(safe+Vector3.new(0,3,0))
-            task.wait(0.2)
-            if hum then hum.Jump=true end
-            task.wait(0.1)
+            hrp.CFrame=CFrame.new(safe+Vector3.new(0,3,0));task.wait(0.2)
+            if hum then hum.Jump=true end;task.wait(0.1)
             tryFire(result.prompt)
         else
-            hrp.CFrame=CFrame.new(CLAIM+Vector3.new(0,3,0))
-            task.wait(0.2)
-            if hum then hum.Jump=true end
-            task.wait(0.1)
+            hrp.CFrame=CFrame.new(CLAIM+Vector3.new(0,3,0));task.wait(0.2)
+            if hum then hum.Jump=true end;task.wait(0.1)
             result=findPrimary()
             if result then tryFire(result.prompt) end
         end
-
-        setStatus("DONE — CLAIM MANUAL","done")
-        setProgress(#CP,#CP)
+        setStatus("DONE","done");setProgress(#CP,#CP)
         pcall(function()
             game:GetService("StarterGui"):SetCore("SendNotification",
-                {Title="Mount Zihan v4",Text="Selesai! Claim sekarang.",Duration=3})
+                {Title="Zihan v4",Text="Selesai! Claim sekarang.",Duration=3})
         end)
         running=false
     end)
 end
 
 -- ══════════════════════════════
--- GUI — SEMUA ABSOLUT, TANPA BODY FRAME
+-- GUI
+-- Semua ukuran dalam pixel absolut
+-- Panel lebar 280px tinggi 230px
+-- Posisi dari pojok kiri atas layar
 -- ══════════════════════════════
 local PNL=Color3.fromRGB(14,14,14)
 local MID=Color3.fromRGB(22,22,22)
@@ -235,220 +218,176 @@ local SIL=Color3.fromRGB(153,153,153)
 local DEEP=Color3.fromRGB(8,8,8)
 
 local sg=Instance.new("ScreenGui")
-sg.Name="ZihanV4"; sg.ResetOnSpawn=false
-sg.DisplayOrder=9999; sg.IgnoreGuiInset=true
+sg.Name="ZihanV4";sg.ResetOnSpawn=false
+sg.DisplayOrder=9999
+sg.IgnoreGuiInset=false  -- FALSE agar tidak terpotong di mobile
 sg.ZIndexBehavior=Enum.ZIndexBehavior.Sibling
 sg.Parent=player.PlayerGui
 
--- PANEL UTAMA 220 × 295
+-- PANEL: lebar 280, tinggi 230
+-- posisi: kiri-tengah layar, agak ke atas
 local F=Instance.new("Frame",sg)
-F.Size=UDim2.new(0,220,0,295)
-F.Position=UDim2.new(0.5,-110,0.5,-147)
-F.BackgroundColor3=PNL; F.BorderSizePixel=0
-F.Active=true; F.Draggable=true; F.ZIndex=10
-do local u=Instance.new("UICorner",F); u.CornerRadius=UDim.new(0,8) end
-do local s=Instance.new("UIStroke",F); s.Color=BRD; s.Thickness=1 end
+F.Size=UDim2.new(0,280,0,230)
+F.Position=UDim2.new(0.5,-140,0.5,-115)
+F.BackgroundColor3=PNL;F.BorderSizePixel=0
+F.Active=true;F.Draggable=true;F.ZIndex=10
+do local u=Instance.new("UICorner",F);u.CornerRadius=UDim.new(0,8) end
+do local s=Instance.new("UIStroke",F);s.Color=BRD;s.Thickness=1 end
 
--- accent top
+-- accent
 local ac=Instance.new("Frame",F)
-ac.Size=UDim2.new(1,-4,0,1); ac.Position=UDim2.new(0,2,0,0)
-ac.BackgroundColor3=SIL; ac.BorderSizePixel=0; ac.ZIndex=15
-do local u=Instance.new("UICorner",ac); u.CornerRadius=UDim.new(0,1) end
+ac.Size=UDim2.new(1,-4,0,1);ac.Position=UDim2.new(0,2,0,0)
+ac.BackgroundColor3=SIL;ac.BorderSizePixel=0;ac.ZIndex=15
+do Instance.new("UICorner",ac).CornerRadius=UDim.new(0,1) end
 
--- ── TOPBAR  y=0 h=42
+-- helper buat frame card
+local function card(yPos, h)
+    local fr=Instance.new("Frame",F)
+    fr.Size=UDim2.new(1,-24,0,h)
+    fr.Position=UDim2.new(0,12,0,yPos)
+    fr.BackgroundColor3=MID;fr.BorderSizePixel=0;fr.ZIndex=12
+    do local u=Instance.new("UICorner",fr);u.CornerRadius=UDim.new(0,5) end
+    do local s=Instance.new("UIStroke",fr);s.Color=BRD;s.Thickness=1 end
+    return fr
+end
+local function lbl(p,txt,col,sz,font,xa)
+    local l=Instance.new("TextLabel",p)
+    l.BackgroundTransparency=1;l.Text=txt
+    l.TextColor3=col or WHT;l.Font=font or Enum.Font.Gotham
+    l.TextSize=sz or 10;l.ZIndex=14
+    l.TextXAlignment=xa or Enum.TextXAlignment.Left
+    return l
+end
+
+-- ── TOPBAR y=0 h=36
 local TB=Instance.new("Frame",F)
-TB.Size=UDim2.new(1,0,0,42); TB.Position=UDim2.new(0,0,0,0)
-TB.BackgroundColor3=DEEP; TB.BorderSizePixel=0; TB.ZIndex=11
-do local u=Instance.new("UICorner",TB); u.CornerRadius=UDim.new(0,8) end
--- fix bottom round
-local tbFix=Instance.new("Frame",TB)
-tbFix.Size=UDim2.new(1,0,0,10); tbFix.Position=UDim2.new(0,0,1,-10)
-tbFix.BackgroundColor3=DEEP; tbFix.BorderSizePixel=0; tbFix.ZIndex=11
-local tbBot=Instance.new("Frame",TB)
-tbBot.Size=UDim2.new(1,0,0,1); tbBot.Position=UDim2.new(0,0,1,-1)
-tbBot.BackgroundColor3=BRD; tbBot.BorderSizePixel=0; tbBot.ZIndex=12
+TB.Size=UDim2.new(1,0,0,36);TB.Position=UDim2.new(0,0,0,0)
+TB.BackgroundColor3=DEEP;TB.BorderSizePixel=0;TB.ZIndex=11
+do local u=Instance.new("UICorner",TB);u.CornerRadius=UDim.new(0,8) end
+do local fx=Instance.new("Frame",TB);fx.Size=UDim2.new(1,0,0,8)
+   fx.Position=UDim2.new(0,0,1,-8);fx.BackgroundColor3=DEEP;fx.BorderSizePixel=0;fx.ZIndex=11 end
+do local bx=Instance.new("Frame",TB);bx.Size=UDim2.new(1,0,0,1)
+   bx.Position=UDim2.new(0,0,1,-1);bx.BackgroundColor3=BRD;bx.BorderSizePixel=0;bx.ZIndex=12 end
 
-local t1=Instance.new("TextLabel",TB)
-t1.Size=UDim2.new(1,-46,0,17); t1.Position=UDim2.new(0,12,0,7)
-t1.BackgroundTransparency=1; t1.Text="MOUNT ZIHAN v4"
-t1.TextColor3=WHT; t1.Font=Enum.Font.GothamBold; t1.TextSize=11
-t1.TextXAlignment=Enum.TextXAlignment.Left; t1.ZIndex=13
-
-local t2=Instance.new("TextLabel",TB)
-t2.Size=UDim2.new(1,-46,0,12); t2.Position=UDim2.new(0,12,0,25)
-t2.BackgroundTransparency=1; t2.Text="BY ALFIAN  ·  AUTO CP 1/52"
-t2.TextColor3=DIM; t2.Font=Enum.Font.Gotham; t2.TextSize=8
-t2.TextXAlignment=Enum.TextXAlignment.Left; t2.ZIndex=13
+local tl1=lbl(TB,"MOUNT ZIHAN v4",WHT,11,Enum.Font.GothamBold);tl1.Size=UDim2.new(1,-44,0,14);tl1.Position=UDim2.new(0,10,0,5)
+local tl2=lbl(TB,"BY ALFIAN · AUTO CP 1/52",DIM,8,Enum.Font.Gotham);tl2.Size=UDim2.new(1,-44,0,11);tl2.Position=UDim2.new(0,10,0,20)
 
 local XB=Instance.new("TextButton",TB)
-XB.Size=UDim2.new(0,22,0,22); XB.Position=UDim2.new(1,-28,0.5,-11)
-XB.BackgroundColor3=MID; XB.Text="✕"; XB.TextColor3=DIM
-XB.Font=Enum.Font.GothamBold; XB.TextSize=9; XB.BorderSizePixel=0; XB.ZIndex=14
-do local u=Instance.new("UICorner",XB); u.CornerRadius=UDim.new(0,5) end
-do local s=Instance.new("UIStroke",XB); s.Color=BRD2; s.Thickness=1 end
+XB.Size=UDim2.new(0,22,0,22);XB.Position=UDim2.new(1,-26,0.5,-11)
+XB.BackgroundColor3=MID;XB.Text="✕";XB.TextColor3=DIM
+XB.Font=Enum.Font.GothamBold;XB.TextSize=9;XB.BorderSizePixel=0;XB.ZIndex=14
+do Instance.new("UICorner",XB).CornerRadius=UDim.new(0,5) end
+do Instance.new("UIStroke",XB).Color=BRD2 end
 XB.MouseEnter:Connect(function() XB.TextColor3=WHT end)
 XB.MouseLeave:Connect(function() XB.TextColor3=DIM end)
 XB.MouseButton1Click:Connect(function()
-    TweenSvc:Create(F,TweenInfo.new(0.18,Enum.EasingStyle.Quart),
-        {Size=UDim2.new(0,220,0,0),BackgroundTransparency=1}):Play()
-    task.delay(0.2,function() sg:Destroy() end)
+    TweenSvc:Create(F,TweenInfo.new(0.15),{Size=UDim2.new(0,280,0,0)}):Play()
+    task.delay(0.15,function() sg:Destroy() end)
 end)
 
--- ── STATUS  y=50 h=26
-local SR=Instance.new("Frame",F)
-SR.Size=UDim2.new(1,-24,0,26); SR.Position=UDim2.new(0,12,0,50)
-SR.BackgroundColor3=MID; SR.BorderSizePixel=0; SR.ZIndex=12
-do local u=Instance.new("UICorner",SR); u.CornerRadius=UDim.new(0,5) end
-do local s=Instance.new("UIStroke",SR); s.Color=BRD; s.Thickness=1 end
+-- ── STATUS  y=44 h=24
+local sr=card(44,24)
+SDot=Instance.new("Frame",sr);SDot.Size=UDim2.new(0,5,0,5);SDot.Position=UDim2.new(0,8,0.5,-2)
+SDot.BackgroundColor3=GR;SDot.BorderSizePixel=0;SDot.ZIndex=13
+do Instance.new("UICorner",SDot).CornerRadius=UDim.new(1,0) end
+SVl=lbl(sr,"READY",GR,10,Enum.Font.GothamBold);SVl.Size=UDim2.new(1,-22,1,0);SVl.Position=UDim2.new(0,18,0,0);SVl.TextTruncate=Enum.TextTruncate.AtEnd
 
-SDot=Instance.new("Frame",SR)
-SDot.Size=UDim2.new(0,5,0,5); SDot.Position=UDim2.new(0,9,0.5,-2)
-SDot.BackgroundColor3=GR; SDot.BorderSizePixel=0; SDot.ZIndex=13
-do local u=Instance.new("UICorner",SDot); u.CornerRadius=UDim.new(1,0) end
+-- ── PROGRESS  y=76 h=18
+local pb=card(76,18)
+pb.BackgroundColor3=MID
+PFill=Instance.new("Frame",pb);PFill.Size=UDim2.new(0,0,1,0)
+PFill.BackgroundColor3=GR;PFill.BorderSizePixel=0;PFill.ZIndex=13
+do Instance.new("UICorner",PFill).CornerRadius=UDim.new(0,5) end
+PPct=lbl(pb,"0 / 52",DIM,8,Enum.Font.GothamBold,Enum.TextXAlignment.Center);PPct.Size=UDim2.new(1,0,1,0)
 
-SVl=Instance.new("TextLabel",SR)
-SVl.Size=UDim2.new(1,-24,1,0); SVl.Position=UDim2.new(0,20,0,0)
-SVl.BackgroundTransparency=1; SVl.Text="READY"
-SVl.TextColor3=GR; SVl.Font=Enum.Font.GothamBold; SVl.TextSize=10
-SVl.TextXAlignment=Enum.TextXAlignment.Left
-SVl.TextTruncate=Enum.TextTruncate.AtEnd; SVl.ZIndex=13
+-- ── MULAI DARI CP  y=102 h=24
+local ir=card(102,24)
+lbl(ir,"Mulai dari CP :",DIM,9,Enum.Font.GothamBold).Size=UDim2.new(0.6,0,1,0);
+do local l=lbl(ir,"Mulai dari CP :",DIM,9,Enum.Font.GothamBold);l.Size=UDim2.new(0.6,0,1,0);l.Position=UDim2.new(0,8,0,0) end
 
--- ── PROGRESS BAR  y=84 h=20
-local PBG=Instance.new("Frame",F)
-PBG.Size=UDim2.new(1,-24,0,20); PBG.Position=UDim2.new(0,12,0,84)
-PBG.BackgroundColor3=MID; PBG.BorderSizePixel=0; PBG.ZIndex=12
-do local u=Instance.new("UICorner",PBG); u.CornerRadius=UDim.new(0,5) end
-do local s=Instance.new("UIStroke",PBG); s.Color=BRD; s.Thickness=1 end
+local IBox=Instance.new("TextBox",ir)
+IBox.Size=UDim2.new(0,46,0,18);IBox.Position=UDim2.new(1,-50,0.5,-9)
+IBox.BackgroundColor3=Color3.fromRGB(16,16,16);IBox.BorderSizePixel=0
+IBox.Text="1";IBox.TextColor3=WHT;IBox.Font=Enum.Font.GothamBold
+IBox.TextSize=10;IBox.TextXAlignment=Enum.TextXAlignment.Center;IBox.ZIndex=13
+do Instance.new("UICorner",IBox).CornerRadius=UDim.new(0,4) end
+do Instance.new("UIStroke",IBox).Color=BRD2 end
 
-PFill=Instance.new("Frame",PBG)
-PFill.Size=UDim2.new(0,0,1,0); PFill.BackgroundColor3=GR
-PFill.BorderSizePixel=0; PFill.ZIndex=13
-do local u=Instance.new("UICorner",PFill); u.CornerRadius=UDim.new(0,5) end
+-- ── ANTI-LAG  y=134 h=24
+local al=card(134,24)
+lbl(al,"ANTI-LAG",DIM,9,Enum.Font.GothamBold).Size=UDim2.new(0.5,0,1,0)
+do local l=lbl(al,"ANTI-LAG",DIM,9,Enum.Font.GothamBold);l.Size=UDim2.new(0.5,0,1,0);l.Position=UDim2.new(0,8,0,0) end
 
-PPct=Instance.new("TextLabel",PBG)
-PPct.Size=UDim2.new(1,0,1,0); PPct.BackgroundTransparency=1
-PPct.Text="0 / 52"; PPct.TextColor3=DIM
-PPct.Font=Enum.Font.GothamBold; PPct.TextSize=9
-PPct.TextXAlignment=Enum.TextXAlignment.Center; PPct.ZIndex=14
-
--- ── MULAI DARI CP  y=112 h=28
-local IR=Instance.new("Frame",F)
-IR.Size=UDim2.new(1,-24,0,28); IR.Position=UDim2.new(0,12,0,112)
-IR.BackgroundColor3=MID; IR.BorderSizePixel=0; IR.ZIndex=12
-do local u=Instance.new("UICorner",IR); u.CornerRadius=UDim.new(0,5) end
-do local s=Instance.new("UIStroke",IR); s.Color=BRD; s.Thickness=1 end
-
-local IKey=Instance.new("TextLabel",IR)
-IKey.Size=UDim2.new(0.6,0,1,0); IKey.Position=UDim2.new(0,8,0,0)
-IKey.BackgroundTransparency=1; IKey.Text="Mulai dari CP :"
-IKey.TextColor3=DIM; IKey.Font=Enum.Font.GothamBold; IKey.TextSize=9
-IKey.TextXAlignment=Enum.TextXAlignment.Left; IKey.ZIndex=13
-
-local IBox=Instance.new("TextBox",IR)
-IBox.Size=UDim2.new(0,48,0,20); IBox.Position=UDim2.new(1,-54,0.5,-10)
-IBox.BackgroundColor3=Color3.fromRGB(16,16,16); IBox.BorderSizePixel=0
-IBox.Text="1"; IBox.TextColor3=WHT; IBox.Font=Enum.Font.GothamBold
-IBox.TextSize=10; IBox.PlaceholderText="1"
-IBox.TextXAlignment=Enum.TextXAlignment.Center; IBox.ZIndex=13
-do local u=Instance.new("UICorner",IBox); u.CornerRadius=UDim.new(0,4) end
-do local s=Instance.new("UIStroke",IBox); s.Color=BRD2; s.Thickness=1 end
-
--- ── ANTI-LAG  y=148 h=28
-local AL=Instance.new("Frame",F)
-AL.Size=UDim2.new(1,-24,0,28); AL.Position=UDim2.new(0,12,0,148)
-AL.BackgroundColor3=MID; AL.BorderSizePixel=0; AL.ZIndex=12
-do local u=Instance.new("UICorner",AL); u.CornerRadius=UDim.new(0,5) end
-do local s=Instance.new("UIStroke",AL); s.Color=BRD; s.Thickness=1 end
-
-local ALKey=Instance.new("TextLabel",AL)
-ALKey.Size=UDim2.new(0.65,0,1,0); ALKey.Position=UDim2.new(0,8,0,0)
-ALKey.BackgroundTransparency=1; ALKey.Text="ANTI-LAG / LOW GRAPHICS"
-ALKey.TextColor3=DIM; ALKey.Font=Enum.Font.GothamBold; ALKey.TextSize=8
-ALKey.TextXAlignment=Enum.TextXAlignment.Left; ALKey.ZIndex=13
-
-local ALB=Instance.new("TextButton",AL)
-ALB.Size=UDim2.new(0,36,0,20); ALB.Position=UDim2.new(1,-42,0.5,-10)
-ALB.BackgroundColor3=MID; ALB.Text="ON"; ALB.TextColor3=WHT
-ALB.Font=Enum.Font.GothamBold; ALB.TextSize=9; ALB.BorderSizePixel=0; ALB.ZIndex=13
-do local u=Instance.new("UICorner",ALB); u.CornerRadius=UDim.new(0,4) end
-local ALsk=Instance.new("UIStroke",ALB); ALsk.Color=SIL; ALsk.Thickness=1
-
+local ALB=Instance.new("TextButton",al)
+ALB.Size=UDim2.new(0,38,0,18);ALB.Position=UDim2.new(1,-42,0.5,-9)
+ALB.BackgroundColor3=MID;ALB.Text="ON";ALB.TextColor3=WHT
+ALB.Font=Enum.Font.GothamBold;ALB.TextSize=9;ALB.BorderSizePixel=0;ALB.ZIndex=13
+do Instance.new("UICorner",ALB).CornerRadius=UDim.new(0,4) end
+local ALsk=Instance.new("UIStroke",ALB);ALsk.Color=SIL
 local alOn=true
 ALB.MouseButton1Click:Connect(function()
     alOn=not alOn
     ALB.Text=alOn and "ON" or "OFF"
     ALB.TextColor3=alOn and WHT or DIM
-    ALsk.Color=alOn and SIL or BRD2
+    ALsk.Color=alOn and SIL or BRD
     if alOn then applyAntiLag() end
 end)
 
--- ── SEP  y=184
+-- ── SEPARATOR  y=166
 local sep=Instance.new("Frame",F)
-sep.Size=UDim2.new(1,-24,0,1); sep.Position=UDim2.new(0,12,0,184)
-sep.BackgroundColor3=BRD; sep.BorderSizePixel=0; sep.ZIndex=12
+sep.Size=UDim2.new(1,-24,0,1);sep.Position=UDim2.new(0,12,0,166)
+sep.BackgroundColor3=BRD;sep.BorderSizePixel=0;sep.ZIndex=12
 
--- ── STOP  y=193 h=40
+-- ── STOP  y=174 h=44
 local StopBtn=Instance.new("TextButton",F)
-StopBtn.Size=UDim2.new(0,74,0,40); StopBtn.Position=UDim2.new(0,12,0,193)
+StopBtn.Size=UDim2.new(0,80,0,44);StopBtn.Position=UDim2.new(0,12,0,174)
 StopBtn.BackgroundColor3=Color3.fromRGB(38,10,10)
-StopBtn.Text="■ STOP"; StopBtn.TextColor3=RD
-StopBtn.Font=Enum.Font.GothamBold; StopBtn.TextSize=11
-StopBtn.BorderSizePixel=0; StopBtn.ZIndex=12
-do local u=Instance.new("UICorner",StopBtn); u.CornerRadius=UDim.new(0,7) end
-do local s=Instance.new("UIStroke",StopBtn); s.Color=Color3.fromRGB(70,18,18); s.Thickness=1 end
+StopBtn.Text="■ STOP";StopBtn.TextColor3=RD
+StopBtn.Font=Enum.Font.GothamBold;StopBtn.TextSize=11;StopBtn.BorderSizePixel=0;StopBtn.ZIndex=12
+do Instance.new("UICorner",StopBtn).CornerRadius=UDim.new(0,7) end
+do local s=Instance.new("UIStroke",StopBtn);s.Color=Color3.fromRGB(70,18,18) end
 StopBtn.MouseButton1Click:Connect(function()
-    stopped=true
-    StopBtn.Text="✓"; StopBtn.TextColor3=YL
-    task.delay(1.5,function()
-        StopBtn.Text="■ STOP"; StopBtn.TextColor3=RD
-    end)
+    stopped=true;StopBtn.Text="✓";StopBtn.TextColor3=YL
+    task.delay(1.5,function() StopBtn.Text="■ STOP";StopBtn.TextColor3=RD end)
 end)
 
--- ── START  y=193 h=40
+-- ── START  y=174 h=44
 local StartBtn=Instance.new("TextButton",F)
-StartBtn.Size=UDim2.new(1,-98,0,40); StartBtn.Position=UDim2.new(0,94,0,193)
-StartBtn.BackgroundColor3=WHT; StartBtn.Text="▶  START"
-StartBtn.TextColor3=DEEP; StartBtn.Font=Enum.Font.GothamBold
-StartBtn.TextSize=14; StartBtn.BorderSizePixel=0; StartBtn.ZIndex=12
-do local u=Instance.new("UICorner",StartBtn); u.CornerRadius=UDim.new(0,7) end
-do local s=Instance.new("UIStroke",StartBtn); s.Color=BRD2; s.Thickness=1 end
-
--- ── F9 label hint  y=244
-local hint=Instance.new("TextLabel",F)
-hint.Size=UDim2.new(1,-24,0,14); hint.Position=UDim2.new(0,12,0,244)
-hint.BackgroundTransparency=1; hint.Text="F9 — toggle panel"
-hint.TextColor3=Color3.fromRGB(50,50,60); hint.Font=Enum.Font.Gotham
-hint.TextSize=8; hint.TextXAlignment=Enum.TextXAlignment.Center; hint.ZIndex=12
+StartBtn.Size=UDim2.new(1,-104,0,44);StartBtn.Position=UDim2.new(0,100,0,174)
+StartBtn.BackgroundColor3=WHT;StartBtn.Text="▶  START"
+StartBtn.TextColor3=DEEP;StartBtn.Font=Enum.Font.GothamBold
+StartBtn.TextSize=14;StartBtn.BorderSizePixel=0;StartBtn.ZIndex=12
+do Instance.new("UICorner",StartBtn).CornerRadius=UDim.new(0,7) end
+do Instance.new("UIStroke",StartBtn).Color=BRD2 end
 
 -- pulse
 local pulsing=true
 task.spawn(function()
     while sg and sg.Parent do
-        task.wait(0.05)
         if pulsing then
-            TweenSvc:Create(StartBtn,TweenInfo.new(1.3,Enum.EasingStyle.Sine,Enum.EasingDirection.InOut),
-                {BackgroundColor3=Color3.fromRGB(195,195,195)}):Play()
-            task.wait(1.3)
+            TweenSvc:Create(StartBtn,TweenInfo.new(1.2,Enum.EasingStyle.Sine,Enum.EasingDirection.InOut),
+                {BackgroundColor3=Color3.fromRGB(190,190,190)}):Play()
+            task.wait(1.2)
             if pulsing then
-                TweenSvc:Create(StartBtn,TweenInfo.new(1.3,Enum.EasingStyle.Sine,Enum.EasingDirection.InOut),
+                TweenSvc:Create(StartBtn,TweenInfo.new(1.2,Enum.EasingStyle.Sine,Enum.EasingDirection.InOut),
                     {BackgroundColor3=WHT}):Play()
-                task.wait(1.3)
+                task.wait(1.2)
             end
-        else task.wait(0.2) end
+        else task.wait(0.3) end
     end
 end)
 
 StartBtn.MouseButton1Click:Connect(function()
     if running then return end
     pulsing=false
-    StartBtn.BackgroundColor3=MID; StartBtn.TextColor3=YL; StartBtn.Text="▶  RUNNING"
-    local from=math.clamp(tonumber(IBox.Text) or 1, 1, #CP)
+    StartBtn.BackgroundColor3=MID;StartBtn.TextColor3=YL;StartBtn.Text="▶  RUNNING"
+    local from=math.clamp(tonumber(IBox.Text) or 1,1,#CP)
     runSequence(from)
     task.spawn(function()
         while running do task.wait(0.1) end
         task.wait(0.4)
-        StartBtn.BackgroundColor3=WHT; StartBtn.TextColor3=DEEP
-        StartBtn.Text="▶  START"; pulsing=true
+        StartBtn.BackgroundColor3=WHT;StartBtn.TextColor3=DEEP
+        StartBtn.Text="▶  START";pulsing=true
     end)
 end)
 
@@ -457,6 +396,6 @@ UIS.InputBegan:Connect(function(inp,gpe)
     if inp.KeyCode==Enum.KeyCode.F9 then F.Visible=not F.Visible end
 end)
 
-task.spawn(function() task.wait(0.5); applyAntiLag() end)
+task.spawn(function() task.wait(0.5);applyAntiLag() end)
 
 print("Mount Zihan v4 | By Alfian | F9 toggle")
